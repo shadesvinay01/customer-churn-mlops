@@ -30,5 +30,3 @@
 - **API**: FastAPI
 - **Frontend**: Streamlit
 - **Deployment**: Docker
-
-## 📁 Project Structure
