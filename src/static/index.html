@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHADOW CHURN ENGINE // Local Customer Churn Prediction & Playbook Dispatcher</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Manrope:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Radial Spotlight Effect -->
+    <div class="spotlight"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand-logo">
+                <svg width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo-icon">
+                    <path d="M18 2L32 10V26L18 34L4 26V10L18 2Z" fill="#0A0A14" stroke="rgba(0, 240, 255, 0.4)" stroke-width="1.5"></path>
+                    <path d="M11 13L19 9L25 13L17 17L11 13Z" fill="#00f0ff" fill-opacity="0.95"></path>
+                    <path d="M11 14.5L17 18.5V25L11 21V14.5Z" fill="#a855f7" fill-opacity="0.6"></path>
+                    <path d="M17 18.5L25 14.5V21L17 25V18.5Z" fill="#10b981" fill-opacity="0.7"></path>
+                </svg>
+                <span class="brand-text">SHADOW <span class="accent-text">CHURN ENGINE</span></span>
+            </a>
+            <div class="system-status-pills">
+                <div class="status-pill green">
+                    <span class="pulse-dot"></span>
+                    <span class="status-label">LOCAL CORE: ACTIVE</span>
+                </div>
+                <div class="status-pill purple" id="connection-status">
+                    <span class="pulse-dot"></span>
+                    <span class="status-label">BACKEND: CHECKING...</span>
+                </div>
+                <div class="status-pill cyan">
+                    <span class="status-label" id="latency-val">LATENCY: -- ms</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Grid Dashboard -->
+    <main class="dashboard-grid">
+        
+        <!-- Column 1: Control Deck -->
+        <section class="dashboard-panel control-deck">
+            <div class="panel-header">
+                <h2>1. CONTROL DECK</h2>
+                <p>Configure customer metadata profile</p>
+            </div>
+
+            <!-- Profile Presets -->
+            <div class="preset-selector-container">
+                <label for="profile-presets">Quick Load Profile Preset</label>
+                <div class="preset-select-wrapper">
+                    <select id="profile-presets">
+                        <option value="default" disabled selected>Select customer template...</option>
+                        <option value="high-risk">🚨 High Risk (Short Tenure, Fiber, Month-to-Month)</option>
+                        <option value="loyal">🛡️ Low Risk (Long Tenure, Contract, Support Addons)</option>
+                        <option value="average">⚖️ Average Risk (Month-to-Month, Medium Charges)</option>
+                        <option value="senior-high">⚠️ Senior Citizen (Fiber, High Charges, No Tech Support)</option>
+                    </select>
+                </div>
+            </div>
+
+            <form id="churn-form" class="panel-scroll-content">
+                <!-- Group A: Contract & Billing -->
+                <div class="input-group-card">
+                    <div class="group-title">Contract & Billing</div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="tenure">Tenure (Months) <span class="val-display" id="tenure-val">12</span></label>
+                            <input type="range" id="tenure" name="tenure" min="0" max="72" value="12" class="slider-input">
+                        </div>
+                    </div>
+
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="MonthlyCharges">Monthly Charges ($) <span class="val-display" id="monthly-val">65.00</span></label>
+                            <input type="range" id="MonthlyCharges" name="MonthlyCharges" min="15" max="120" step="0.5" value="65.0" class="slider-input">
+                        </div>
+                        <div class="form-col">
+                            <label for="TotalCharges">Total Charges ($) <span class="val-display" id="total-val">780.00</span></label>
+                            <input type="number" id="TotalCharges" name="TotalCharges" min="0" max="9000" step="1" value="780" class="number-input">
+                        </div>
+                    </div>
+
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="Contract">Contract Type</label>
+                            <select id="Contract" name="Contract" class="select-input">
+                                <option value="Month-to-month">Month-to-month</option>
+                                <option value="One year">One year</option>
+                                <option value="Two year">Two year</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="PaperlessBilling">Paperless Billing</label>
+                            <select id="PaperlessBilling" name="PaperlessBilling" class="select-input">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="PaymentMethod">Payment Method</label>
+                            <select id="PaymentMethod" name="PaymentMethod" class="select-input">
+                                <option value="Electronic check">Electronic check</option>
+                                <option value="Mailed check">Mailed check</option>
+                                <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                                <option value="Credit card (automatic)">Credit card (automatic)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group B: Internet & Security Stack -->
+                <div class="input-group-card">
+                    <div class="group-title">Internet & Security Stack</div>
+                    
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="InternetService">Internet Service</label>
+                            <select id="InternetService" name="InternetService" class="select-input">
+                                <option value="Fiber optic">Fiber optic</option>
+                                <option value="DSL">DSL</option>
+                                <option value="No">No Internet Service</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="OnlineSecurity">Online Security</label>
+                            <select id="OnlineSecurity" name="OnlineSecurity" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No internet service">No Internet Service</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="OnlineBackup">Online Backup</label>
+                            <select id="OnlineBackup" name="OnlineBackup" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No internet service">No Internet Service</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="DeviceProtection">Device Protection</label>
+                            <select id="DeviceProtection" name="DeviceProtection" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No internet service">No Internet Service</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="TechSupport">Tech Support</label>
+                            <select id="TechSupport" name="TechSupport" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No internet service">No Internet Service</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="PhoneService">Phone Service</label>
+                            <select id="PhoneService" name="PhoneService" class="select-input">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="MultipleLines">Multiple Lines</label>
+                            <select id="MultipleLines" name="MultipleLines" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No phone service">No Phone Service</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="StreamingTV">Streaming TV</label>
+                            <select id="StreamingTV" name="StreamingTV" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No internet service">No Internet Service</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="StreamingMovies">Streaming Movies</label>
+                            <select id="StreamingMovies" name="StreamingMovies" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No internet service">No Internet Service</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group C: Demographics -->
+                <div class="input-group-card">
+                    <div class="group-title">Demographics</div>
+                    
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" class="select-input">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="SeniorCitizen">Senior Citizen</label>
+                            <select id="SeniorCitizen" name="SeniorCitizen" class="select-input">
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row split-2">
+                        <div class="form-col">
+                            <label for="Partner">Has Partner</label>
+                            <select id="Partner" name="Partner" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label for="Dependents">Has Dependents</label>
+                            <select id="Dependents" name="Dependents" class="select-input">
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="action-footer">
+                <button type="button" id="inference-btn" class="glowing-btn">
+                    <span class="btn-glow-layer"></span>
+                    <span class="btn-text">DISPATCH CHURN INFERENCE</span>
+                    <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Column 2: Core Processor (Pipeline & Analysis) -->
+        <section class="dashboard-panel processor-core">
+            <div class="panel-header">
+                <h2>2. SHADOW CORE PROCESSOR</h2>
+                <p>Real-time neural pipeline tracking</p>
+            </div>
+
+            <!-- Pipeline Stepper -->
+            <div class="pipeline-section">
+                <div class="section-subtitle">INFERENCE PIPELINE</div>
+                <div class="pipeline-flow">
+                    <div class="pipeline-connector">
+                        <div class="connector-progress" id="pipeline-progress-bar"></div>
+                    </div>
+
+                    <!-- Step 1 -->
+                    <div class="pipeline-step" id="step-ingest">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                            <span class="step-num">1</span>
+                        </div>
+                        <div class="step-details">
+                            <div class="step-name">INGESTION & VALIDATION</div>
+                            <div class="step-status">IDLE</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="pipeline-step" id="step-encode">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                            <span class="step-num">2</span>
+                        </div>
+                        <div class="step-details">
+                            <div class="step-name">FEATURE VECTORIZATION (30 Dims)</div>
+                            <div class="step-status">IDLE</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="pipeline-step" id="step-inference">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                            <span class="step-num">3</span>
+                        </div>
+                        <div class="step-details">
+                            <div class="step-name">LOCAL MODEL PASS (Random Forest)</div>
+                            <div class="step-status">IDLE</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="pipeline-step" id="step-shap">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                            <span class="step-num">4</span>
+                        </div>
+                        <div class="step-details">
+                            <div class="step-name">SHAP RISK DRIVER INTERPRETATION</div>
+                            <div class="step-status">IDLE</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="pipeline-step" id="step-playbook">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                            <span class="step-num">5</span>
+                        </div>
+                        <div class="step-details">
+                            <div class="step-name">PLAYBOOK ROUTING & DISPATCH</div>
+                            <div class="step-status">IDLE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis & Results -->
+            <div class="analysis-section panel-scroll-content">
+                <div class="section-subtitle">ENGINE OUTPUTS</div>
+
+                <div class="results-grid">
+                    <!-- Gauge Meter -->
+                    <div class="result-card probability-card">
+                        <div class="card-inner">
+                            <div class="gauge-container">
+                                <svg class="gauge-ring" viewBox="0 0 100 100">
+                                    <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                                    <circle class="gauge-fill" id="gauge-fill-arc" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+                                </svg>
+                                <div class="gauge-center">
+                                    <span class="gauge-value" id="probability-text">0.0%</span>
+                                    <span class="gauge-label">CHURN RISK</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Classification Card -->
+                    <div class="result-card classification-card" id="verdict-card">
+                        <div class="card-inner">
+                            <div class="verdict-title">ENGINE VERDICT</div>
+                            <div class="verdict-badge" id="verdict-badge">WAITING</div>
+                            <div class="verdict-meta">
+                                <div class="meta-row">
+                                    <span>Confidence:</span>
+                                    <span id="verdict-confidence">--</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span>Decision:</span>
+                                    <span id="verdict-decision">Awaiting input</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver Breakdown / Feature Importance -->
+                <div class="drivers-card">
+                    <div class="drivers-header">
+                        <span>Attributed Risk Drivers (Top SHAP Contributors)</span>
+                        <span class="drivers-unit">Impact Score</span>
+                    </div>
+                    <div class="drivers-list" id="drivers-list">
+                        <!-- Drivers injected by JS -->
+                        <div class="empty-drivers-placeholder">
+                            Trigger prediction inference to inspect feature attribution scores.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Column 3: Playbook & Console Terminal -->
+        <section class="dashboard-panel terminal-playbook">
+            <div class="panel-header">
+                <h2>3. PLAYBOOK & CORE LOGS</h2>
+                <p>Local mitigation dispatch & system audit</p>
+            </div>
+
+            <!-- Active Playbook Actions -->
+            <div class="playbook-section">
+                <div class="section-subtitle">AUTOMATED PLAYBOOK</div>
+                
+                <div class="playbook-container" id="playbook-container">
+                    <div class="playbook-placeholder">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="placeholder-icon">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <line x1="10" y1="9" x2="8" y2="9"/>
+                        </svg>
+                        <p>No Churn Risk evaluated yet. Dispatch inference to generate retention actions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal log Console -->
+            <div class="console-section">
+                <div class="console-header">
+                    <div class="console-title">
+                        <span class="terminal-prompt">&gt;</span> SYSTEM_LOG // LOCAL_AUDIT
+                    </div>
+                    <button class="clear-console-btn" id="clear-console-btn">CLEAR</button>
+                </div>
+                <div class="console-body" id="console-body">
+                    <!-- Logs injected by JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Sovereign Footer -->
+    <footer class="sovereign-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>© 2026 SHADOW CHURN ENGINE. PRIVACY BY ARCHITECTURE.</p>
+            </div>
+            <div class="footer-center">
+                <span class="stat-tag"><span class="highlight">0 BYTES</span> UPLOADED TO CLOUD</span>
+                <span class="stat-tag"><span class="highlight">100% LOCAL</span> INFERENCE</span>
+                <span class="stat-tag"><span class="highlight">AES-256</span> METADATA VAULT</span>
+            </div>
+            <div class="footer-right">
+                <p>STATUS: SECURITY SANDBOX DEPLOYED</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

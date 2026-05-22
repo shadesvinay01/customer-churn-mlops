@@ -5,7 +5,13 @@ import joblib
 import json
 import pandas as pd
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, RedirectResponse
+
 app = FastAPI(title="Telco Customer Churn Prediction API")
+
+# Serve dashboard static assets
+app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 # Load model and features
 model = joblib.load("models/churn_best_model.pkl")
@@ -36,7 +42,11 @@ class CustomerData(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "Telco Customer Churn Prediction API is running!"}
+    return FileResponse("src/static/index.html")
+
+@app.get("/dashboard")
+def dashboard():
+    return RedirectResponse(url="/")
 
 @app.post("/predict")
 def predict_churn(data: CustomerData):
